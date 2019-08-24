@@ -27,7 +27,7 @@ function gravarMensagem(mensagem) {
 
   var container = [];
   var a;
-  
+
   a = container.push(mensagem.id);
   a = container.push(mensagem.status);
   a = container.push(mensagem.date_created);
