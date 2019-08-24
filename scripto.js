@@ -18,33 +18,36 @@ function gravarMensagem(mensagem) {
   var celulas = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('Sheet1');
 
   // Seleciona as células que conterão o cabeçalho. Em ordem, os parâmetros são: primeira linha, primeira coluna, última linha, última coluna
-  var cabecalho = celulas.getRange(1, 1, 1, 23);
-
-  // Escreve os nomes das colunas nas células de cabeçalho
-  //cabecalho.setValues([['id', 'first name', 'last name']]);
-  cabecalho.setValues([['id',
-  'status',
-  'date_created',
-  'date_modified',
-  'discount_total',
-  'shipping_total',
-  'total',
-  'customer_id',
-  'customer_note',
-  'billing.first_name + last_name',
-  'billing.email',
-  'billing.phone',
-  'billing.cpf',
-  'shipping.first_name + last_name',
-  'shipping.address_1',
-  'shipping.address_2',
-  'shipping.number',
-  'shipping.neighborhood',
-  'shipping.city',
-  'shipping.state',
-  'shipping.postcode',
-  'payment_method_title',
-  'date_paid']]);
+  // var cabecalho = celulas.getRange(1, 1, 1, 24);
+  //
+  // // Escreve os nomes das colunas nas células de cabeçalho
+  // //cabecalho.setValues([['id', 'first name', 'last name']]);
+  // cabecalho.setValues([[
+  //   'id',
+  //   'status',
+  //   'date_created',
+  //   'date_modified',
+  //   'discount_total',
+  //   'shipping_total',
+  //   'total',
+  //   'customer_id',
+  //   'customer_note',
+  //   'billing.first_name + last_name',
+  //   'billing.email',
+  //   'billing.phone',
+  //   'billing.cpf',
+  //   'shipping.first_name + last_name',
+  //   'shipping.address_1',
+  //   'shipping.address_2',
+  //   'shipping.number',
+  //   'shipping.neighborhood',
+  //   'shipping.city',
+  //   'shipping.state',
+  //   'shipping.postcode',
+  //   'payment_method_title',
+  //   'date_paid',
+  //   'method_title'
+  // ]]);
 
   // Cria uma trava que impede que dois ou mais usuários executem o script simultaneamente
   var trava = LockService.getScriptLock();
@@ -54,22 +57,6 @@ function gravarMensagem(mensagem) {
 
   var arrayLength = mensagem.length;
 
-  // Navega pelos dados enviados pelo webhook
-  /*for (var i = 0; i < arrayLength; i++) {
-
-    // Escreve os dados na planilha
-    celulas.appendRow([mensagem[i]["id"],
-                       mensagem[i]["billing"]["first_name"],
-                       mensagem[i]["billing"]["last_name"]]);
-
-    // Atualiza a planilha com a nova linha
-    SpreadsheetApp.flush();
-  }*/
-
-  // Escreve os dados na planilha
-    /*celulas.appendRow([mensagem.id,
-                       mensagem.billing.first_name,
-                       "gol do peixao"]);*/
   celulas.appendRow([
       mensagem.id,
       mensagem.status,
@@ -93,8 +80,37 @@ function gravarMensagem(mensagem) {
       mensagem.shipping.state,
       mensagem.shipping.postcode,
       mensagem.payment_method_title,
-      mensagem.date_paid
+      mensagem.date_paid,
+      mensagem.shipping_lines[0].method_title
     ]);
+
+
+    Logger.log(mensagem.line_items);
+
+    for (var i = 0; i < mensagem.line_items.length; i++) {
+      celulas.appendRow([
+        mensagem.line_items[i].name,
+        mensagem.line_items[i].product_id,
+        mensagem.line_items[i].variation_id,
+        mensagem.line_items[i].quantity,
+        mensagem.line_items[i].sku,
+        mensagem.line_items[i].meta_data[0].id,
+        mensagem.line_items[i].meta_data[0].key,
+        mensagem.line_items[i].meta_data[0].value,
+      ]);
+    }
+
+    var container = [];
+
+    var a;
+
+    a = container.push(mensagem.id);
+    celulas.appendRow(container);
+
+    /*
+      line_items
+      id, name, product_id, variation_id, quantity, meta_data (id, value), sku
+    */
 
     // Atualiza a planilha com a nova linha
     SpreadsheetApp.flush();
