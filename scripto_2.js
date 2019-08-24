@@ -27,8 +27,7 @@ function gravarMensagem(mensagem) {
 
   var container = [];
   var a;
-
-  a = container.push(mensagem.id);
+  
   a = container.push(mensagem.id);
   a = container.push(mensagem.status);
   a = container.push(mensagem.date_created);
@@ -52,7 +51,7 @@ function gravarMensagem(mensagem) {
   a = container.push(mensagem.shipping.postcode);
   a = container.push(mensagem.payment_method_title);
   a = container.push(mensagem.date_paid);
-  a = container.push(mensagem.shipping_lines[0].method_titl);
+  a = container.push(mensagem.shipping_lines[0].method_title);
 
   for (var i = 0; i < mensagem.line_items.length; i++) {
     container.push(mensagem.line_items[i].name);
